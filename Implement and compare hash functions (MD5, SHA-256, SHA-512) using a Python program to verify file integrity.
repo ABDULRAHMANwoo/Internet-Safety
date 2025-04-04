@@ -1,0 +1,82 @@
+Aim: To implement hash functions (MD5, SHA-256, SHA-512) using Python and compare their 
+outputs to verify file integrity.
+Software & Tools Required:
+ Python 3.x
+ Text editor (VSCode, Sublime Text, etc.)
+ Command line or terminal
+Experiment Steps:
+Step 1: Understanding Hash Functions
+A hash function takes an input (or 'message') and returns a fixed-size string, which typically 
+represents the content of the input. Hash functions like MD5, SHA-256, and SHA-512 are 
+commonly used for tasks like file integrity checks, password storage, and digital signatures.
+ MD5: Produces a 128-bit hash value (16 bytes).
+ SHA-256: Part of the SHA-2 family, produces a 256-bit hash value (32 bytes).
+ SHA-512: Also part of the SHA-2 family, produces a 512-bit hash value (64 bytes).
+Each hash function is designed to return a unique hash for every distinct input, but small changes in 
+the input will drastically change the output.
+Step 2: Writing the Python Program
+Create a Python program that calculates and compares the hash values for MD5, SHA-256, and 
+SHA-512 for a given file.
+Python Code (hash_functions.py):
+import hashlib
+# Function to compute hash values for a given file using MD5, SHA-256, and SHA512
+def compute_hash(file_path):
+ # Create empty dictionaries to store the hash values
+ hashes = {"MD5": "", "SHA-256": "", "SHA-512": ""}
+ 
+ # Open the file in binary mode
+ with open(file_path, 'rb') as file:
+ # Read the file in chunks to avoid memory overflow for large files
+ file_data = file.read()
+ 
+ # MD5 hash calculation
+ md5_hash = hashlib.md5()
+ md5_hash.update(file_data)
+ hashes["MD5"] = md5_hash.hexdigest()
+ # SHA-256 hash calculation
+ sha256_hash = hashlib.sha256()
+ sha256_hash.update(file_data)
+ hashes["SHA-256"] = sha256_hash.hexdigest()
+ # SHA-512 hash calculation
+ sha512_hash = hashlib.sha512()
+ sha512_hash.update(file_data)
+ hashes["SHA-512"] = sha512_hash.hexdigest()
+ return hashes
+# Function to compare hash values
+def compare_hashes(hashes):
+ print(f"MD5 Hash: {hashes['MD5']}")
+ print(f"SHA-256 Hash: {hashes['SHA-256']}")
+ print(f"SHA-512 Hash: {hashes['SHA-512']}")
+# Main function to test the hash functions
+if __name__ == "__main__":
+ file_path = input("Enter the path of the file to hash: ")
+ hashes = compute_hash(file_path)
+ compare_hashes(hashes)
+Step 3: Running the Program
+1. Save the code in a file called hash_functions.py.
+2. Open the terminal and navigate to the directory where the Python script is located.
+3. Run the program using the command:
+bash
+CopyEdit
+python hash_functions.py
+4. Enter the path of the file you want to check for integrity when prompted.
+Step 4: Verifying File Integrity Using Hashes
+ Once the program runs, it will output the MD5, SHA-256, and SHA-512 hash values of the provided 
+file.
+ You can compare these hash values with a trusted source to verify that the file is intact.
+ To check if a file has been altered, calculate the hash of the file at a later time and compare it to the 
+original hash. If the hashes match, the file is intact; if they differ, the file has been modified.
+Step 5: Comparing Hash Functions
+1. MD5: Fast but considered weak for cryptographic purposes. It is vulnerable to collisions (two 
+different inputs producing the same hash).
+2. SHA-256: Stronger than MD5, producing a longer and more secure hash.
+3. SHA-512: Provides an even longer hash than SHA-256 and is more resistant to collision attacks, 
+making it the most secure of the three.
+By comparing the hashes, you can observe the differences in hash length and security between MD5, 
+SHA-256, and SHA-512.
+Expected Outcome:
+ The program successfully computes and displays the MD5, SHA-256, and SHA-512 hash values for 
+the given file.
+ File integrity is verified by comparing the computed hash with the known hash of the original file.
+ The user can observe the difference in hash lengths and the security level of each hash function.
+
