@@ -1,0 +1,86 @@
+Aim:
+To develop a Java program that extracts and displays IP addresses, subnet masks, and default 
+gateways from system network settings.
+Software & Tools Required:
+ Java Development Kit (JDK)
+ Java IDE (Eclipse, IntelliJ IDEA, VS Code)
+ Command Line or Terminal (Windows/Linux)
+Experiment Steps:
+Step 1: Set Up the Development Environment
+1. Install Java Development Kit (JDK) if not already installed.
+java -version
+2. Install an IDE such as Eclipse or IntelliJ IDEA for writing and running Java programs.
+Step 2: Understanding Network Interfaces in Java
+1. Java provides the NetworkInterface class to obtain network-related details.
+2. The InetAddress class is used to retrieve IP addresses.
+Step 3: Implementing the Java Program
+1. Create a new Java class (NetworkDetails.java).
+2. Write the following Java program:
+import java.net.*;
+import java.util.*;
+public class NetworkDetails {
+ public static void main(String[] args) {
+ try {
+ Enumeration<NetworkInterface> interfaces = 
+NetworkInterface.getNetworkInterfaces();
+ while (interfaces.hasMoreElements()) {
+ NetworkInterface network = interfaces.nextElement();
+ System.out.println("Interface: " + 
+network.getDisplayName());
+ Enumeration<InetAddress> addresses = 
+network.getInetAddresses();
+ while (addresses.hasMoreElements()) {
+ InetAddress address = addresses.nextElement();
+System.out.println(" IP Address: " + 
+address.getHostAddress());
+ }
+ }
+ } catch (SocketException e) {
+ e.printStackTrace();
+ }
+ }
+}
+Step 4: Compiling and Running the Program
+1. Open a terminal or command prompt.
+2. Navigate to the directory where the Java file is saved.
+3. Compile the Java program:
+javac NetworkDetails.java
+4. Run the program:
+java NetworkDetails
+Step 5: Extracting Subnet Mask and Default Gateway (Linux/Windows)
+1. On Linux, use:
+ifconfig -a
+or
+ip addr show
+2. On Windows, use:
+ipconfig
+3. Modify the Java program to execute system commands and extract subnet masks and 
+gateways using:
+import java.io.*;
+public class NetworkConfig {
+ public static void main(String[] args) {
+ try {
+ Process process = Runtime.getRuntime().exec("ipconfig"); // 
+Change to "ifconfig" for Linux
+ BufferedReader reader = new BufferedReader(new 
+InputStreamReader(process.getInputStream()));
+ String line;
+ while ((line = reader.readLine()) != null) {
+ if (line.contains("Subnet Mask") || 
+line.contains("Gateway")) {
+ System.out.println(line.trim());
+ }
+ }
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ }
+}
+4. Compile and run the program as before.
+Step 6: Testing the Program
+1. Run the program on different operating systems (Windows, Linux, MacOS).
+2. Verify the displayed network details with system commands (ipconfig, ifconfig, ip addr 
+show).
+Expected Outcome:
+✅ The Java program successfully retrieves and displays the IP addresses, subnet masks, and default 
+gateways from system network settings
