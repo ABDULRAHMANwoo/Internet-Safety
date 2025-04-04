@@ -1,0 +1,118 @@
+Aim: To implement a Python script that encrypts and authenticates messages using the AES-GCM 
+mode of operation for authenticated encryption, ensuring confidentiality, integrity, and authenticity.
+Software & Tools Required:
+ Python 3.x
+ pycryptodome library (for AES-GCM encryption)
+ Text editor (VSCode, Sublime Text, etc.)
+ Command line or terminal
+Experiment Steps:
+Step 1: Understanding AES-GCM (Authenticated Encryption)
+AES-GCM (Galois/Counter Mode) is an authenticated encryption mode that provides both 
+confidentiality (encryption) and integrity/authentication (message authentication code - MAC). It 
+combines:
+1. Encryption: Using AES to encrypt the plaintext message.
+2. Authentication: Using a MAC (Galois MAC) to verify both the authenticity and integrity of the 
+message.
+AES-GCM requires:
+ Key: A secret key for AES encryption.
+ Nonce/IV (Initialization Vector): A unique value for each encryption operation to ensure that the 
+same plaintext produces different ciphertext each time.
+ Additional Authenticated Data (AAD): Optional data that is authenticated but not encrypted.
+ Ciphertext: The encrypted message.
+ Tag: The authentication tag to verify the integrity of the ciphertext.
+Step 2: Installing the pycryptodome Library
+Install the pycryptodome library, which supports AES encryption and other cryptographic 
+operations:
+pip install pycryptodome
+Step 3: Writing the Python Script for AES-GCM Encryption and Authentication
+We will write a Python script to:
+1. Encrypt a message using AES-GCM.
+2. Authenticate the message using an authentication tag.
+3. Decrypt the message and verify its authenticity.
+Python Code (aes_gcm_encryption.py):
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Protocol.KDF import scrypt
+import base64
+# Function to generate a random key (AES-256 requires a 32-byte key)
+def generate_key():
+ key = get_random_bytes(32) # AES-256 key size
+ return key
+# Function to encrypt a message using AES-GCM
+def encrypt_message(key, message, aad=None):
+ # Generate a random 12-byte nonce (recommended size for GCM)
+ nonce = get_random_bytes(12)
+ 
+ # Create AES-GCM cipher object
+ cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+ 
+ # Encrypt the message and return ciphertext, nonce, and tag
+ cipher.update(aad) # Optional AAD (Additional Authenticated Data)
+ ciphertext, tag = cipher.encrypt_and_digest(message.encode())
+ 
+ return ciphertext, nonce, tag
+# Function to decrypt a message using AES-GCM and verify its authenticity
+def decrypt_message(key, ciphertext, nonce, tag, aad=None):
+ # Create AES-GCM cipher object
+ cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+ 
+ cipher.update(aad) # Optional AAD (Additional Authenticated Data)
+ 
+ # Decrypt the message and verify the authenticity
+ try:
+ decrypted_message = cipher.decrypt_and_verify(ciphertext, tag)
+ return decrypted_message.decode()
+ except (ValueError, TypeError):
+ print("Decryption failed or message is tampered!")
+ return None
+# Main function to demonstrate AES-GCM encryption and decryption
+def main():
+ # The message to be encrypted
+ message = "This is a confidential and authenticated message."
+ 
+ # Generate the AES key
+ key = generate_key()
+ 
+ # Encrypt the message
+ print("Encrypting message...")
+ aad = b"Additional Authenticated Data" # Optional AAD
+ ciphertext, nonce, tag = encrypt_message(key, message, aad)
+ 
+ 
+ # Print the encrypted message details
+ print(f"Ciphertext (Base64): {base64.b64encode(ciphertext).decode()}")
+ print(f"Nonce (Base64): {base64.b64encode(nonce).decode()}")
+ print(f"Authentication Tag (Base64): {base64.b64encode(tag).decode()}")
+ 
+ # Decrypt the message
+ print("\nDecrypting message...")
+ decrypted_message = decrypt_message(key, ciphertext, nonce, tag, aad)
+ 
+ if decrypted_message:
+ print(f"Decrypted Message: {decrypted_message}")
+ else:
+ print("Failed to decrypt the message.")
+if __name__ == "__main__":
+ main()
+Step 4: Running the Program
+1. Save the Python script as aes_gcm_encryption.py.
+2. Open your terminal or command prompt and navigate to the directory where the script is 
+saved.
+3. Run the script using the following command:
+python aes_gcm_encryption.py
+4. The program will:
+o Encrypt the message using AES-GCM.
+o Print the ciphertext, nonce, and authentication tag.
+o Decrypt the message and verify its authenticity.
+Step 5: Verifying the Results
+ The script will print the ciphertext (in Base64 format), nonce, and the authentication tag.
+ The message will be decrypted using the same key and nonce. If the decryption is successful and the 
+message has not been tampered with, the original plaintext message will be displayed.
+ If the message has been altered in any way or if the authentication tag does not match, the 
+decryption will fail, and an error message will be displayed.
+Expected Outcome:
+ The script will successfully encrypt and decrypt a message using AES-GCM.
+ The ciphertext, nonce, and authentication tag will be printed in Base64 format.
+ The decrypted message will match the original plaintext if no tampering occurred.
+ If the message or tag is altered, the decryption will fail, indicating tampering.
