@@ -1,0 +1,59 @@
+Aim:
+To develop a Python script that logs all incoming and outgoing network connections using the 
+psutil library and saves the data for analysis.
+Software & Tools Required:
+ Python 3.x installed on the system
+ psutil library for network connection monitoring
+ Linux or Windows OS
+ Text editor or IDE (VS Code, PyCharm, Nano, etc.)
+Experiment Steps:
+Step 1: Install Required Libraries
+1. Open a terminal or command prompt.
+2. Install the psutil library if not already installed:
+pip install psutil
+3. Verify the installation by running:
+python3 -c "import psutil; print('psutil installed successfully')"
+Step 2: Implementing the Python Script
+1. Create a Python script (network_logger.py) to monitor network connections.
+2. Write the following Python code:
+import psutil
+import time
+import csv
+def log_connections(log_file="network_connections.csv"):
+ with open(log_file, mode='w', newline='') as file:
+ writer = csv.writer(file)
+ writer.writerow(["Timestamp", "PID", "Local Address", "Remote 
+Address", "Status", "Process Name"])
+ 
+ while True:
+ for conn in psutil.net_connections(kind='inet'):
+ try:
+ laddr = f"{conn.laddr.ip}:{conn.laddr.port}" if 
+conn.laddr else "N/A"
+ raddr = f"{conn.raddr.ip}:{conn.raddr.port}" if 
+conn.raddr else "N/A"
+ process = psutil.Process(conn.pid).name() if conn.pid 
+else "N/A"
+ writer.writerow([time.strftime("%Y-%m-%d %H:%M:%S"), 
+conn.pid, laddr, raddr, conn.status, process])
+ except (psutil.NoSuchProcess, psutil.AccessDenied):
+ continue
+ time.sleep(5) # Log every 5 seconds
+if __name__ == "__main__":
+log_connections()
+Step 3: Running the Script
+1. Save the script as network_logger.py.
+2. Run the script using:
+python3 network_logger.py
+3. The script will continuously log network connections and save them to 
+network_connections.csv.
+Step 4: Analyzing the Logged Data
+1. Open the CSV file in Excel or a text editor.
+2. Filter data based on process names, statuses, or remote addresses.
+3. Identify unusual or suspicious network activity.
+Step 5: Stopping the Script
+1. Use Ctrl + C in the terminal to stop the script.
+2. Verify the network_connections.csv file to ensure data has been logged.
+Expected Outcome:
+✅ The Python script successfully logs all active incoming and outgoing network connections and 
+saves them for further analysis.
