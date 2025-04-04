@@ -1,0 +1,96 @@
+Aim: To develop a Python script that creates and verifies digital signatures using the PyCryptodome
+library in Python.
+Software & Tools Required:
+ Python 3.x
+ PyCryptodome library (Python package)
+ Text editor (VSCode, Sublime Text, etc.)
+ Command line or terminal
+Experiment Steps:
+Step 1: Understanding Digital Signatures
+A digital signature is a cryptographic technique used to authenticate the sender of a message and to 
+ensure that the message has not been tampered with. It uses a pair of keys:
+ Private key: Used to create the digital signature.
+ Public key: Used to verify the signature.
+The signature is created by hashing the message and encrypting the hash with the sender's private 
+key. The recipient can then decrypt the hash with the sender‟s public key and compare it to the hash 
+of the received message to verify its authenticity.
+Step 2: Installing the PyCryptodome Library
+First, install the PyCryptodome library if you haven't already. Open your terminal or command 
+prompt and run the following command:
+pip install pycryptodome
+Step 3: Writing the Python Script for Digital Signatures
+Create a Python script that:
+1. Generates a key pair (private and public keys).
+2. Creates a digital signature using the private key.
+3. Verifies the digital signature using the public key.
+Python Code (digital_signature.py):
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+from Crypto.Random import get_random_bytes
+import binascii
+# Function to generate RSA key pair
+def generate_keys():
+ key = RSA.generate(2048) # 2048-bit RSA key
+ private_key = key.export_key()
+ public_key = key.publickey().export_key()
+ return private_key, public_key
+# Function to create a digital signature
+def create_signature(message, private_key):
+ # Hash the message using SHA-256
+ h = SHA256.new(message.encode())
+ # Load the private key
+ private_key_obj = RSA.import_key(private_key)
+ # Create the signature using the private key and hashed message
+ signature = pkcs1_15.new(private_key_obj).sign(h)
+ return signature
+# Function to verify the digital signature
+def verify_signature(message, signature, public_key):
+ # Hash the message
+ h = SHA256.new(message.encode())
+ # Load the public key
+ public_key_obj = RSA.import_key(public_key)
+ try:
+ # Verify the signature using the public key
+ pkcs1_15.new(public_key_obj).verify(h, signature)
+ print("Signature is valid!")
+ except (ValueError, TypeError):
+ print("Signature verification failed!")
+# Main function
+if __name__ == "__main__":
+ # Step 1: Generate RSA keys
+ private_key, public_key = generate_keys()
+ # Step 2: Define a message
+ message = "This is a secret message!"
+ # Step 3: Create a digital signature for the message
+ print(f"Original Message: {message}")
+ signature = create_signature(message, private_key)
+ # Print the signature (in hexadecimal format)
+ print(f"Digital Signature: {binascii.hexlify(signature).decode()}")
+ # Step 4: Verify the digital signature
+ print("\nVerifying the signature with the public key...")
+ verify_signature(message, signature, public_key)
+Step 4: Running the Program
+1. Save the Python script as digital_signature.py.
+2. Open your terminal and navigate to the directory where the script is saved.
+3. Run the script using the following command:
+python digital_signature.py
+4. The program will generate a public-private key pair, create a digital signature for the 
+message, and verify the signature.
+Step 5: Verifying the Digital Signature
+ The script generates a private key and public key.
+ It then hashes a message and creates a digital signature using the private key.
+ The program verifies the signature by comparing the hash of the message with the decrypted hash 
+from the signature using the public key.
+If the signature is valid, it will print "Signature is valid!"; otherwise, it will print "Signature 
+verification failed!".
+Step 6: Testing Signature Integrity
+To test the integrity of the digital signature:
+1. Modify the message and try to verify the signature again.
+2. The program should fail to verify the signature because the message no longer matches the original 
+one.
+Expected Outcome:
+ The program generates a key pair (private and public keys).
+ It creates a digital signature using the private key and verifies the signature using the public key.
+ The signature is verified successfully when the message is intact. If the message is altered, the 
+verification should fail.
