@@ -1,0 +1,58 @@
+Aim:
+To develop a Java application that computes and verifies the SHA-256 checksum of a downloaded 
+file to ensure its integrity.
+Software & Tools Required:
+ Java Development Kit (JDK)
+ Java IDE (Eclipse, IntelliJ IDEA, VS Code)
+ Sample file for checksum verification
+Experiment Steps:
+Step 1: Understanding SHA-256 Checksum
+1. SHA-256 is a cryptographic hash function that generates a fixed 256-bit hash value for data.
+2. It is commonly used to verify file integrity after downloading.
+Step 2: Implement SHA-256 Checksum Calculation in Java
+1. Create a Java class (FileChecksum.java) to compute the SHA-256 hash:
+import java.io.File;
+import java.io.FileInputStream;
+import java.security.MessageDigest;
+import java.util.Formatter;
+public class FileChecksum {
+ public static String calculateSHA256(File file) throws Exception {
+ MessageDigest digest = MessageDigest.getInstance("SHA-256");
+ FileInputStream fis = new FileInputStream(file);
+ byte[] byteArray = new byte[1024];
+ int bytesRead;
+ while ((bytesRead = fis.read(byteArray)) != -1) {
+ digest.update(byteArray, 0, bytesRead);
+ }
+ fis.close();
+ byte[] hashBytes = digest.digest();
+ return bytesToHex(hashBytes);
+ }
+ private static String bytesToHex(byte[] bytes) {
+ Formatter formatter = new Formatter();
+ for (byte b : bytes) {
+ formatter.format("%02x", b);
+ }
+ String result = formatter.toString();
+ formatter.close();
+ return result;
+ }
+ public static void main(String[] args) throws Exception {
+ File file = new File("sample.txt"); // Replace with actual file 
+path
+ String checksum = calculateSHA256(file);
+ System.out.println("SHA-256 Checksum: " + checksum);
+ }
+}
+Step 3: Compile and Run the Java Program
+1. Compile the program:
+javac FileChecksum.java
+2. Run the program:
+java FileChecksum
+3. Observe the SHA-256 hash output for the file.
+Step 4: Verify File Integrity
+1. Compare the generated SHA-256 hash with the provided checksum of the downloaded file.
+2. If they match, the file is intact; if not, the file is corrupted or tampered with.
+Expected Outcome:
+✅ The Java application successfully calculates and verifies the SHA-256 checksum of a file, 
+ensuring its integrity after downloading.
