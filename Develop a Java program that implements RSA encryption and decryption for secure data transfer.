@@ -1,0 +1,65 @@
+15. Develop a Java program that implements RSA encryption and decryption for secure data 
+transfer.
+Aim:
+To develop a Java application that implements RSA encryption and decryption for secure data 
+transfer.
+Software & Tools Required:
+ Java Development Kit (JDK)
+ Java IDE (Eclipse, IntelliJ IDEA, VS Code)
+ Java Cryptography API
+Experiment Steps:
+Step 1: Understanding RSA Encryption
+1. RSA (Rivest-Shamir-Adleman) is an asymmetric encryption algorithm used for secure data 
+transmission.
+2. It uses a pair of keys: a public key for encryption and a private key for decryption.
+Step 2: Implement RSA Encryption and Decryption in Java
+1. Create a Java class (RSAEncryption.java) to generate keys, encrypt, and decrypt data:
+import java.security.*;
+import javax.crypto.Cipher;
+import java.util.Base64;
+public class RSAEncryption {
+ private static KeyPair generateKeyPair() throws Exception {
+ KeyPairGenerator keyPairGenerator = 
+KeyPairGenerator.getInstance("RSA");
+ keyPairGenerator.initialize(2048);
+ return keyPairGenerator.generateKeyPair();
+ }
+ public static String encrypt(String data, PublicKey publicKey) throws 
+Exception {
+ Cipher cipher = Cipher.getInstance("RSA");
+ cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+ byte[] encryptedBytes = cipher.doFinal(data.getBytes());
+ return Base64.getEncoder().encodeToString(encryptedBytes);
+ }
+ public static String decrypt(String encryptedData, PrivateKey 
+privateKey) throws Exception {
+ Cipher cipher = Cipher.getInstance("RSA");
+ cipher.init(Cipher.DECRYPT_MODE, privateKey);
+ byte[] decryptedBytes = 
+cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+ return new String(decryptedBytes);
+ }
+ public static void main(String[] args) throws Exception {
+ KeyPair keyPair = generateKeyPair();
+ String originalData = "SecureMessage123";
+ 
+ String encryptedData = encrypt(originalData, keyPair.getPublic());
+ System.out.println("Encrypted Data: " + encryptedData);
+ 
+ String decryptedData = decrypt(encryptedData, 
+keyPair.getPrivate());
+ System.out.println("Decrypted Data: " + decryptedData);
+ }
+}
+Step 3: Compile and Run the Java Program
+1. Compile the program:
+javac RSAEncryption.java
+2. Run the program:
+java RSAEncryption
+3. Observe the encrypted and decrypted outputs in the console.
+Step 4: Secure Key Storage and Transfer
+1. Store private keys securely to prevent unauthorized access.
+2. Use digital signatures to verify the authenticity of messages.
+Expected Outcome:
+✅ The Java application successfully encrypts and decrypts data using RSA, ensuring secure data 
+transfer.
