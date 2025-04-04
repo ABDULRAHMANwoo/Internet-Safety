@@ -1,0 +1,69 @@
+Aim:
+To develop a Python-based monitoring tool that detects unauthorized changes to system network 
+configuration files (/etc/network/interfaces, /etc/resolv.conf).
+Software & Tools Required:
+ Python 3.x installed on the system
+ hashlib and time Python modules (pre-installed)
+ Linux OS (Administrator/Root privileges required)
+ Text editor or IDE (VS Code, PyCharm, Nano, etc.)
+Experiment Steps:
+Step 1: Understanding the Concept
+System network configuration files are critical for defining network interfaces and DNS settings. 
+Any unauthorized modification to these files could lead to security vulnerabilities. This experiment 
+develops a monitoring tool that computes hash values of target files and alerts the user if any 
+modifications are detected.
+Step 2: Implementing the Monitoring Script
+1. Create a new Python script named network_monitor.py.
+2. Write the following Python code:
+import hashlib
+import time
+import os
+# List of files to monitor
+FILES_TO_MONITOR = ["/etc/network/interfaces", "/etc/resolv.conf"]
+def get_file_hash(filepath):
+ """Returns the SHA256 hash of the file contents."""
+ try:
+ with open(filepath, 'rb') as file:
+ file_contents = file.read()
+ return hashlib.sha256(file_contents).hexdigest()
+ except FileNotFoundError:
+ return None
+def monitor_files(interval=10):
+ """Continuously monitors the files for unauthorized changes."""
+ file_hashes = {file: get_file_hash(file) for file in FILES_TO_MONITOR}
+ 
+ print("Monitoring started. Press Ctrl+C to stop.")
+ 
+ try:
+ while True:
+ time.sleep(interval)
+ 
+ for file in FILES_TO_MONITOR:
+ new_hash = get_file_hash(file)
+ if new_hash is None:
+ print(f"[ALERT] {file} has been deleted!")
+ elif new_hash != file_hashes[file]:
+ print(f"[WARNING] Unauthorized change detected in {file}!")
+file_hashes[file] = new_hash # Update stored hash
+ except KeyboardInterrupt:
+ print("Monitoring stopped.")
+if __name__ == "__main__":
+ monitor_files()
+Step 3: Running the Script
+1. Save the script as network_monitor.py.
+2. Grant execution permissions (if necessary):
+chmod +x network_monitor.py
+3. Run the script using:
+sudo python3 network_monitor.py
+(Use sudo on Linux/macOS to ensure necessary read permissions.)
+Step 4: Testing Unauthorized Changes
+1. Open /etc/resolv.conf or /etc/network/interfaces in a text editor.
+sudo nano /etc/resolv.conf
+2. Modify and save the file.
+3. Observe the monitoring tool‟s output in the terminal.
+Step 5: Stopping the Monitor
+1. Use Ctrl + C in the terminal to stop the script.
+2. Analyze the output to identify detected changes.
+Expected Outcome:
+✅ The Python script continuously monitors network configuration files and alerts the user if any 
+unauthorized modifications are detected.
