@@ -1,0 +1,99 @@
+Aim: To compare the performance and security of the SHA-256 and bcrypt hashing algorithms in 
+terms of their computation time and resistance to brute-force attacks.
+Software & Tools Required:
+ Python 3.x
+ hashlib (for SHA-256 hashing)
+ bcrypt library (for bcrypt hashing)
+ Text editor (VSCode, Sublime Text, etc.)
+ Command line or terminal
+Experiment Steps:
+Step 1: Understanding Hashing Algorithms
+Hashing algorithms are used to convert data into a fixed-size string of characters, which is typically 
+a hash value or digest. Hash functions are one-way operations, meaning it‟s computationally 
+infeasible to reverse the process and retrieve the original input.
+ SHA-256: A part of the SHA-2 family, it produces a 256-bit (32-byte) hash value. It is fast but 
+vulnerable to brute-force and rainbow table attacks, as it is not inherently designed to be 
+computationally slow.
+ bcrypt: A key derivation function that is deliberately designed to be slow, which helps defend 
+against brute-force and rainbow table attacks. It incorporates a "salt" to ensure that identical 
+passwords do not hash to the same value.
+Step 2: Installing Required Libraries
+Install the bcrypt library to perform bcrypt hashing:
+pip install bcrypt
+Step 3: Writing the Python Program
+We will write a Python script that:
+1. Hashes a given input string (e.g., a password) using both SHA-256 and bcrypt.
+2. Compares the computation time for both algorithms.
+3. Discusses the security considerations and resistance to brute-force attacks.
+Python Code (hashing_comparison.py):
+import hashlib
+import bcrypt
+import time
+# Function to hash using SHA-256
+def hash_sha256(data):
+ sha256 = hashlib.sha256()
+ sha256.update(data.encode('utf-8'))
+ return sha256.hexdigest()
+# Function to hash using bcrypt
+def hash_bcrypt(data):
+ salt = bcrypt.gensalt()
+ return bcrypt.hashpw(data.encode('utf-8'), salt)
+# Function to compare performance and security of SHA-256 and bcrypt
+def compare_hashing_algorithms():
+ data = "supersecretpassword"
+ 
+ # SHA-256 hashing
+ start_time = time.time()
+ sha256_hash = hash_sha256(data)
+ sha256_time = time.time() - start_time
+ print(f"SHA-256 Hash: {sha256_hash}")
+ print(f"SHA-256 Time: {sha256_time:.6f} seconds")
+ 
+ # bcrypt hashing
+ start_time = time.time()
+ bcrypt_hash = hash_bcrypt(data)
+ bcrypt_time = time.time() - start_time
+ print(f"bcrypt Hash: {bcrypt_hash}")
+ print(f"bcrypt Time: {bcrypt_time:.6f} seconds")
+ 
+ # Comparing performance
+ print("\nPerformance Comparison:")
+ print(f"SHA-256 is faster than bcrypt by {bcrypt_time/sha256_time:.2f}
+times.")
+ 
+ # Security Considerations
+ print("\nSecurity Considerations:")
+ print("1. SHA-256 is fast, making it vulnerable to brute-force attacks and 
+rainbow table attacks.")
+ print("2. bcrypt is designed to be slow, increasing the time for brute-force 
+attacks and making it more secure.")
+ print("3. bcrypt also uses a salt to protect against rainbow table 
+attacks.")
+ print("4. bcrypt hashes cannot be reversed, and it includes a work factor 
+(cost factor) to make hashing more expensive.")
+# Main function to run the comparison
+if __name__ == "__main__":
+ compare_hashing_algorithms()
+Step 4: Running the Program
+1. Save the Python script as hashing_comparison.py.
+2. Open your terminal or command prompt and navigate to the directory where the script is 
+saved.
+3. Run the script using the following command:
+python hashing_comparison.py
+4. The program will:
+o Hash a password (supersecretpassword) using both SHA-256 and bcrypt.
+o Display the resulting hashes.
+o Show the computation times for both algorithms.
+o Provide a comparison of the performance and security.
+Step 5: Verifying the Results
+ The SHA-256 hashing algorithm will likely be much faster than bcrypt.
+ bcrypt will take longer to compute the hash due to its deliberate slowness.
+ The security of bcrypt will be higher, especially against brute-force attacks, due to its work factor 
+and use of a salt.
+Expected Outcome:
+ Performance: SHA-256 will be faster than bcrypt because it is designed to be a quick hash 
+function.
+ Security: bcrypt will be more secure than SHA-256 because it is resistant to brute-force and 
+rainbow table attacks due to its slowness and salt usage.
+ Comparison: The program will provide a side-by-side comparison of the two algorithms in terms of 
+time and security.
