@@ -1,0 +1,53 @@
+Aim:
+To develop a Python script that scans and lists open ports on a target machine using socket and 
+nmap libraries.
+Software & Tools Required:
+ Python 3.x installed on the system
+ socket library for network communication
+ python-nmap library for advanced scanning
+ Linux or Windows OS
+ Text editor or IDE (VS Code, PyCharm, Nano, etc.)
+Experiment Steps:
+Step 1: Install Required Libraries
+1. Open a terminal.
+2. Install python-nmap for network scanning:
+pip install python-nmap
+3. Verify the installation by running:
+python3 -c "import nmap; print('nmap installed successfully')"
+Step 2: Implementing a Basic Port Scanner
+1. Create a Python script (port_scanner.py) to scan ports using the socket library.
+2. Example script:
+import socket
+def scan_ports(target, ports):
+ for port in ports:
+ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ sock.settimeout(1)
+ result = sock.connect_ex((target, port))
+ if result == 0:
+ print(f"Port {port} is open")
+ sock.close()
+target_ip = "192.168.1.1"
+ports_to_scan = [22, 80, 443, 8080]
+scan_ports(target_ip, ports_to_scan)
+3. Run the script to check for open ports:
+python3 port_scanner.py
+Step 3: Using nmap for Advanced Scanning
+1. Modify the script to use python-nmap for advanced scanning.
+2. Example script:
+import nmap
+def nmap_scan(target):
+ scanner = nmap.PortScanner()
+ scanner.scan(target, '1-1024', '-sS')
+ for port in scanner[target]['tcp']:
+ print(f"Port {port}: {scanner[target]['tcp'][port]['state']}")
+target_ip = "192.168.1.1"
+nmap_scan(target_ip)
+3. Run the script to perform a detailed scan:
+python3 port_scanner.py
+Step 4: Testing the Script
+1. Use the script to scan a known local or remote machine.
+2. Verify open ports using:
+netstat -tulnp
+3. Compare results between socket and nmap methods.
+Expected Outcome:
+✅ The Python script successfully scans and lists open ports on the target machine.
