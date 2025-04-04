@@ -1,0 +1,81 @@
+Aim: To develop a Python program that uses the hmac module to create a secure HMAC-based 
+(Hash-based Message Authentication Code) authentication system.
+Software & Tools Required:
+ Python 3.x
+ Text editor (VSCode, Sublime Text, etc.)
+ Command line or terminal
+Experiment Steps:
+Step 1: Understanding HMAC
+HMAC (Hash-based Message Authentication Code) is a mechanism used to verify the integrity and 
+authenticity of a message. It combines a cryptographic hash function (like SHA-256) with a secret 
+key to produce a unique value (HMAC).
+ How HMAC Works:
+1. The message is combined with a secret key.
+2. A hash function is applied to the combined message and key.
+3. The resulting hash value is used to verify the authenticity of the message.
+HMAC ensures that even if the message is intercepted during transmission, an attacker cannot 
+modify the message without the correct key.
+Step 2: Writing the Python Program
+Create a Python program that uses the hmac module to authenticate messages and ensure secure 
+communication.
+Python Code (hmac_authentication.py):
+import hmac
+import hashlib
+import time
+# Secret key for HMAC (this should be kept secure)
+SECRET_KEY = b'supersecretkey'
+# Function to generate HMAC for a given message
+def generate_hmac(message, key):
+ return hmac.new(key, message.encode(), hashlib.sha256).hexdigest()
+# Function to verify the HMAC for a given message
+def verify_hmac(message, key, expected_hmac):
+ generated_hmac = generate_hmac(message, key)
+ return hmac.compare_digest(generated_hmac, expected_hmac)
+# Simulating a basic authentication process
+def authenticate_user(username, password):
+ # In a real-world scenario, the password would be hashed and stored securely
+ # Here, we simulate a stored password hash
+ stored_password_hash = generate_hmac("userpassword", SECRET_KEY)
+ 
+ # Verify the HMAC of the provided password against the stored hash
+ provided_password_hash = generate_hmac(password, SECRET_KEY)
+ 
+ if verify_hmac(provided_password_hash, SECRET_KEY, stored_password_hash):
+ print("Authentication Successful!")
+ return True
+ else:
+ print("Authentication Failed!")
+ return False
+# Simulating login attempt
+if __name__ == "__main__":
+ print("Welcome to the Secure Authentication System!")
+ 
+ username = input("Enter username: ")
+ password = input("Enter password: ")
+ 
+ # Authenticate the user with HMAC
+ authenticate_user(username, password)
+Step 3: Running the Program
+1. Save the Python script as hmac_authentication.py.
+2. Open your terminal and navigate to the directory where the script is saved.
+3. Run the script using the following command:
+bash
+CopyEdit
+python hmac_authentication.py
+4. When prompted, enter the username and password. The system will authenticate the user 
+based on the password and secret key stored within the system.
+Step 4: Testing the Authentication System
+ Correct Password: If you enter the correct password (e.g., "userpassword"), the program should 
+print "Authentication Successful!".
+ Incorrect Password: If the password is incorrect, it will print "Authentication Failed!".
+Step 5: Improving the Authentication System
+ Session Management: For real-world applications, after successful authentication, implement 
+session management (e.g., using tokens) to manage user sessions.
+ Salting: Salt the password before hashing it with HMAC to increase security.
+ More Complex Security: You can integrate additional features, such as rate-limiting login attempts 
+or using multi-factor authentication (MFA).
+Expected Outcome:
+ The program successfully uses the HMAC mechanism to authenticate users securely by comparing 
+the generated HMAC of the password against the stored HMAC.
+ The system correctly identifies and authenticates users if the correct password is entered and denies 
+access if the password is incorrect.
