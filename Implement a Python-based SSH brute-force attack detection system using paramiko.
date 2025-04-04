@@ -1,0 +1,55 @@
+Aim: To develop a Python script using the Paramiko library to detect and log failed SSH login 
+attempts, helping in the prevention of brute-force attacks.
+Software & Tools Required:
+ Python 3.x installed on the system
+ Paramiko library for SSH handling
+ Logging module for maintaining attack logs
+ SSH server (OpenSSH, Dropbear, or other SSH services)
+ Text editor or IDE (VS Code, PyCharm, Nano, etc.)
+Experiment Steps:
+Step 1: Install Required Libraries
+1. Open a terminal or command prompt.
+2. Install Paramiko:
+pip install paramiko
+3. Verify the installation:
+python3 -c "import paramiko; print('Paramiko installed successfully')"
+Step 2: Implement SSH Brute-Force Detection
+1. Create a Python script named ssh_brute_force_detector.py.
+2. Write the following Python code:
+import paramiko
+import socket
+import logging
+# Configure logging
+logging.basicConfig(filename="ssh_brute_force.log", level=logging.INFO,
+ format="%(asctime)s - %(message)s")
+def detect_brute_force_attempts(server_ip, port, username, password_list):
+ """Detects failed SSH login attempts using Paramiko."""
+ for password in password_list:
+ try:
+ client = paramiko.SSHClient()
+ client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ client.connect(server_ip, port=port, username=username, 
+password=password, timeout=5)
+ client.close()
+ print("Login successful with password:", password)
+ break
+ except paramiko.AuthenticationException:
+ logging.info(f"Failed login attempt for {username} with 
+password: {password}")
+ print("Failed login attempt detected.")
+ except socket.error:
+ logging.error("Connection error occurred.")
+ break
+# Example usage
+server_ip = "192.168.1.1"
+port = 22
+username = "admin"
+password_list = ["password123", "admin123", "letmein", "123456"]
+detect_brute_force_attempts(server_ip, port, username, password_list)
+Step 3: Running the Script
+1. Run the Python script to detect brute-force login attempts:
+python3 ssh_brute_force_detector.py
+2. Check the ssh_brute_force.log file for logged failed attempts:
+cat ssh_brute_force.log
+Expected Outcome: ✅ The script detects and logs failed SSH login attempts to a log file, providing 
+insight into potential brute-force attacks.
