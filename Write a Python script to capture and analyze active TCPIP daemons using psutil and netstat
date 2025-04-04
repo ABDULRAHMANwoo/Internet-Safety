@@ -1,0 +1,23 @@
+Aim:
+To develop a Python script that captures and analyzes active TCP/IP daemons running on a system 
+using psutil and netstat.
+Software & Tools Required:
+ Python 3.x installed on the system
+ psutil library (for process and network connection analysis)
+Experiment Steps:
+Step 1: Install Required Libraries
+1. Open a terminal or command prompt.
+2. Install psutil using:
+pip install psutil
+Step 2: Capture Active TCP/IP Daemons
+1. Create a Python script (tcp_daemons.py) to list active TCP/IP daemons.
+2. Example code to list open network connections:
+import psutil
+def list_tcp_connections():
+ for conn in psutil.net_connections(kind='tcp'):
+ print(f"PID: {conn.pid}, Local Address: {conn.laddr}, Remote 
+Address: {conn.raddr}, Status: {conn.status}")
+list_tcp_connections()
+3. Run the script and verify active TCP connections.
+Expected Outcome:
+✅ The Python script successfully lists and analyzes active TCP/IP daemons running on the system.
