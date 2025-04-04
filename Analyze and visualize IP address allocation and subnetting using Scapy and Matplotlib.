@@ -1,0 +1,69 @@
+Aim:
+To analyze and visualize IP address allocation and subnetting using a Python script that utilizes 
+Scapy for network packet analysis and Matplotlib for visualization.
+Software & Tools Required:
+ Python 3.x installed on the system
+ Scapy library (for network packet analysis)
+ Matplotlib library (for data visualization)
+ NumPy library (for data manipulation)
+ A working internet connection or a local network for packet capture
+Experiment Steps:
+Step 1: Install Required Libraries
+1. Open a terminal or command prompt.
+2. Install the necessary Python libraries using the following command:
+pip install scapy matplotlib numpy
+3. Verify the installation by running python and importing the libraries:
+import scapy.all as scapy
+import matplotlib.pyplot as plt
+import numpy as np
+Step 2: Capture and Analyze IP Addresses
+1. Create a Python script (ip_analysis.py) to capture network packets and extract IP 
+addresses.
+2. Use Scapy‟s sniff function to capture packets:
+from scapy.all import sniff
+def capture_packets(packet):
+ if packet.haslayer(scapy.IP):
+ print(f"Source IP: {packet[scapy.IP].src}, Destination IP: 
+{packet[scapy.IP].dst}")
+sniff(prn=capture_packets, count=10) # Capture 10 packets
+3. Run the script and verify that source and destination IPs are displayed.
+Step 3: Visualize IP Allocation and Subnetting
+1. Modify the script to store captured IPs and count occurrences.
+2. Use Matplotlib to create a bar chart for IP frequency distribution.
+3. Example script:
+from collections import Counter
+import matplotlib.pyplot as plt
+ip_count = Counter()
+def capture_packets(packet):
+ if packet.haslayer(scapy.IP):
+ ip_count[packet[scapy.IP].src] += 1
+ ip_count[packet[scapy.IP].dst] += 1
+sniff(prn=capture_packets, count=50) # Capture 50 packets
+# Visualization
+ips = list(ip_count.keys())
+counts = list(ip_count.values())
+plt.figure(figsize=(10,5))
+plt.bar(ips, counts, color='blue')
+plt.xticks(rotation=45)
+plt.xlabel("IP Addresses")
+plt.ylabel("Number of Packets")
+plt.title("IP Address Allocation Analysis")
+plt.show()
+4. Run the script and check the generated bar chart representing IP address usage.
+Step 4: Subnet Analysis
+1. Identify private and public IP addresses using subnet masks.
+2. Modify the script to classify IPs based on subnets.
+3. Example code snippet:
+import ipaddress
+def classify_ip(ip):
+ ip_obj = ipaddress.ip_address(ip)
+ if ip_obj.is_private:
+ return "Private IP"
+ else:
+ return "Public IP"
+for ip in ip_count.keys():
+print(f"{ip}: {classify_ip(ip)}")
+4. Run the script and verify classification of captured IPs.
+Expected Outcome: ✅ IP addresses are successfully captured and analyzed.
+✅ A bar chart visualizing the frequency of IP addresses is displayed.
+✅ IP addresses are classified as private or public based on subnet analysis.
