@@ -1,0 +1,70 @@
+Aim:
+To develop a Java program that implements a secure login system by enforcing Java Security 
+Manager policies to restrict unauthorized access.
+Software & Tools Required:
+ Java Development Kit (JDK)
+ Java IDE (Eclipse, IntelliJ IDEA, VS Code)
+ Command Line or Terminal (Windows/Linux)
+Experiment Steps:
+Step 1: Understanding Java Security Manager
+1. The Java Security Manager helps enforce security policies by restricting operations like file 
+access and network operations.
+2. It uses a security policy file (.policy) to define the allowed actions.
+Step 2: Create a Security Policy File
+1. Create a file named secure.policy with the following content:
+grant {
+ permission java.io.FilePermission "login.txt", "read,write";
+ permission java.lang.RuntimePermission "exitVM";
+};
+2. This policy allows reading and writing to login.txt and permits JVM exit.
+Step 3: Implementing the Secure Login System in Java
+1. Create a Java class (SecureLogin.java).
+2. Write the following Java code:
+import java.io.*;
+import java.security.AccessControlException;
+import java.util.Scanner;
+public class SecureLogin {
+ public static void main(String[] args) {
+ System.setSecurityManager(new SecurityManager());
+ String correctUsername = "admin";
+ String correctPassword = "password123";
+ 
+ Scanner scanner = new Scanner(System.in);
+ System.out.print("Enter username: ");
+ String username = scanner.nextLine();
+ System.out.print("Enter password: ");
+ String password = scanner.nextLine();
+ 
+ if (username.equals(correctUsername) && 
+password.equals(correctPassword)) {
+ System.out.println("Login Successful!");
+ try {
+ FileWriter writer = new FileWriter("login.txt", true);
+ writer.write("User " + username + " logged in 
+successfully.\n");
+ writer.close();
+ } catch (AccessControlException e) {
+ System.out.println("Security Exception: File write access 
+denied!");
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ } else {
+ System.out.println("Invalid Credentials!");
+ }
+ scanner.close();
+ }
+}
+Step 4: Compiling and Running the Program
+1. Compile the Java program:
+javac SecureLogin.java
+2. Run the program with the security manager enabled:
+java -Djava.security.manager -Djava.security.policy=secure.policy 
+SecureLogin
+Step 5: Testing Security Policy
+1. Attempt login with correct credentials and check if login.txt is updated.
+2. Modify secure.policy to remove FilePermission and rerun the program.
+3. Observe that writing to login.txt is blocked due to security restrictions.
+Expected Outcome:
+✅ The Java program successfully implements a secure login system while enforcing Java Security 
+Manager policies to restrict unauthorized file access and ensure controlled security behavior.
